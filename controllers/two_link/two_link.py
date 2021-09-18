@@ -62,8 +62,8 @@ while robot.step(EVENT_LOOP_DT) != -1:
     # If hunting, then watch for a range signal.
     if running is False:
         motor1.setPosition(math.inf)  # rotate shoulder at constant rate
-        motor1.setVelocity(0.5)       # radians/sec
-        motor2.setPosition(math.pi/2) # move elbow to bent position
+        motor1.setVelocity(.5)       # radians/sec
+        motor2.setPosition(math.pi/3) # move elbow to bent position
 
         # read the sensor
         distance = sensor.getValue()
@@ -78,6 +78,7 @@ while robot.step(EVENT_LOOP_DT) != -1:
     else:
         # If running, try to keep j2 away from the target
         motor1.setVelocity(-3)
+        motor2.setPosition(0)
 
         # if too much time passes, quit running
         if (t - running_start) > 4.0:

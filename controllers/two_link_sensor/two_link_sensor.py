@@ -62,12 +62,12 @@ while robot.step(EVENT_LOOP_DT) != -1:
     # If hunting, then watch for a range signal.
     if tracking is False:
         motor1.setPosition(math.inf)  # rotate shoulder at constant rate
-        motor1.setVelocity(0.5)       # radians/sec
+        motor1.setVelocity(1)       # radians/sec
         motor2.setPosition(math.pi/2) # move elbow to bent position
 
         # read the sensor
         distance = sensor.getValue()
-        if distance < 0.9:
+        if distance < 1:
             print("%s: range sensor triggered: %f" % (robot_name, distance))
             tracking = True
             last_distance = distance
@@ -90,7 +90,7 @@ while robot.step(EVENT_LOOP_DT) != -1:
         else:
             # read the distance sensor
             distance = sensor.getValue()
-            if distance > 0.89:
+            if distance > 1:
                 print("%s: range sensor at maximum: %f, resuming hunt." % (robot_name, distance))
                 tracking = False
 
