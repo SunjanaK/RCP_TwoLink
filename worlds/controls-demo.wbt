@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.9134672453215811 -0.014710378055580599 0.4066462793412285 5.826116431286975
-  position 0.5122294925999724 -3.059801563609489 6.355038241847713
+  orientation -0.6703418829800729 -0.010876693686728304 0.7419726797242439 5.877699644856873
+  position -0.4267125509222747 -2.103127531268997 5.462461738338003
   follow "center-two-link"
 }
 Background {
@@ -18,49 +18,69 @@ DirectionalLight {
 }
 RectangleArena {
   rotation 1 0 0 1.5708
-  floorSize 6 2
+  floorSize 6 4
 }
 DEF obstacle Solid {
-  translation 1.36 0.601428 0.112534
-  rotation 1 0 0 1.309
+  translation 0.66 0.567097 0.295644
+  rotation 1 0 0 1.5708
   children [
-    Shape {
+    DEF Transform Shape {
       appearance PBRAppearance {
+        roughness 0.2
+        metalness 0.7
       }
       geometry Cylinder {
         height 0.6
-        radius 0.16
+        radius 0.15
       }
     }
   ]
-  name "solid(1)"
+  name "solid(2)"
+  contactMaterial "cylinder1"
+  boundingObject USE Transform
 }
 DEF obstacle Solid {
-  translation 1.39 -0.564948 0.280116
-  rotation 1 0 0 1.309
+  translation 0 -0.592903 0.295644
+  rotation 1 0 0 1.5708
   children [
-    Shape {
+    DEF Transform Shape {
       appearance PBRAppearance {
+        roughness 0.2
+        metalness 0.7
       }
       geometry Cylinder {
         height 0.6
-        radius 0.16
+        radius 0.15
       }
     }
   ]
+  contactMaterial "cylinder1"
+  boundingObject USE Transform
 }
 two-link {
-  hidden linearVelocity_3 0.045588314545974354 0.18213744848442523 1.6425854514160972e-09
-  hidden angularVelocity_3 7.969323780318598e-07 -1.928143133412427e-07 -0.749999974970719
-  hidden linearVelocity_4 0.13018209611903028 0.4831115877651385 -1.145008696426633e-07
-  hidden angularVelocity_4 -2.46396897137647e-06 3.1277668796673493e-07 -0.5000001805408324
+  hidden position_0_0 -3.822929349074868
+  hidden translation_3 -0.19418287988479346 0.15745795997550543 0.25
+  hidden rotation_3 0 0 -1 3.822929349074868
+  hidden position_3_0 -29.49651135224698
+  hidden linearVelocity_3 -0.11998632288405593 -0.1444139508880484 -3.881605297201367e-07
+  hidden angularVelocity_3 -5.990165405939461e-07 -1.5190679245245557e-06 0.7499995138066138
+  hidden translation_4 0.16459998184060623 0.2349613519248968 0.09999999999999999
+  hidden rotation_4 0 0 -1 4.363770123528634
+  hidden linearVelocity_4 -0.18095064093422136 -0.30941646647247145 -1.879848357096481e-06
+  hidden angularVelocity_4 3.4178169386260297e-06 -3.608039707471004e-06 0.2499994670424674
   name "center-two-link"
 }
 two-link {
-  hidden linearVelocity_3 0.159763389760668 -0.09862996776643151 -3.077573722098089e-13
-  hidden angularVelocity_3 1.0209382964268598e-12 -7.009070766713327e-13 0.7499999996883744
-  hidden linearVelocity_4 0.4181548237136297 -0.037498179745694984 -1.386446613991452e-12
-  hidden angularVelocity_4 2.0663866641995077e-12 2.3409458127602526e-12 0.7499996967267232
+  hidden position_0_0 162.35768011935463
+  hidden translation_3 0.13399295681801532 -0.21105896693380613 0.24999999999999997
+  hidden rotation_3 0 0 -1 1.0051378673146227
+  hidden position_3_0 1.5707960527627203
+  hidden linearVelocity_3 0.16050416576857074 0.0972989367748518 1.2829795473006967e-08
+  hidden angularVelocity_3 -1.7075438247630084e-07 1.9358829744027316e-07 0.7499999937365142
+  hidden translation_4 0.25000006850804407 0.2499999999999906 0.09999999999999999
+  hidden rotation_4 0 0 1 1.5707960527627203
+  hidden linearVelocity_4 0.22371031848728232 0.3550975831613589 -7.456552963689688e-08
+  hidden angularVelocity_4 -2.8475746227238454e-07 2.989319071593747e-07 0.749999950927651
   translation -1.5 0 0
   controller "two_link_sensor"
   name "left-two-link"
