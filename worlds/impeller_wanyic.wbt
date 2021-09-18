@@ -1,0 +1,166 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation -5.3239399086356436e-17 0.5813591710832178 0.8136470452213503 3.141592653589793
+  position -0.10414433807510484 5.396800765277567 1.9314601852831854
+}
+Background {
+  skyColor [
+    0.0432593 0.0951247 0.188251
+  ]
+}
+DirectionalLight {
+  direction 1 -1 -1
+  intensity 3
+  castShadows TRUE
+}
+RectangleArena {
+  rotation 1 0 0 0.7854003061004253
+  floorSize 3 3
+  wallHeight 0
+}
+DEF ball Solid {
+  translation -0.00486405 -1.07003 1.03315
+  rotation 0.10354699611398487 0.8694429673706755 0.4830599818712423 1.76488
+  children [
+    DEF ballShape Transform {
+      translation 0 0 0.3
+      rotation 1 0 0 1.5708
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.714443 0 0.998718
+            roughness 0.2
+            metalness 0.7
+          }
+          geometry Sphere {
+            radius 0.1
+          }
+        }
+      ]
+    }
+  ]
+  boundingObject USE ballShape
+  physics Physics {
+    density -1
+    mass 0.25
+  }
+}
+Robot {
+  translation -0.0999992 0.841452 -1.13543
+  rotation -0.9999999999909084 4.067059999963024e-07 -4.2447599999614085e-06 0.7854
+  children [
+    Receiver {
+    }
+    Emitter {
+    }
+    DEF baseObject Transform {
+      translation 0 0 0.1
+      rotation 1 0 0 1.5708
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.21529 0.543008 0.99855
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.2
+            radius 0.2
+          }
+        }
+      ]
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position -2.992045812728848
+        axis 0 0 1
+      }
+      device [
+        PositionSensor {
+          name "joint1"
+        }
+        RotationalMotor {
+          name "motor1"
+          maxVelocity 30
+        }
+      ]
+      endPoint Solid {
+        translation -0.2526865436047346 -0.0363812286990504 0.24993252345790817
+        rotation 7.080597938049461e-06 2.284149182611401e-06 -0.9999999999723239 2.992045812715118
+        children [
+          DEF link1Shape Transform {
+            translation -0.27 9.91765e-07 0
+            rotation 0 0 -1 1.5708
+            children [
+              Shape {
+                appearance DEF redAppearance PBRAppearance {
+                  baseColor 0.990494 0.516915 0.468254
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 3.5
+                  radius 0.1
+                }
+              }
+            ]
+          }
+          Transform {
+            translation -0.25 0 0
+            rotation 1 0 0 1.5708
+            children [
+              Shape {
+                appearance USE redAppearance
+                geometry Cylinder {
+                  height 0.1
+                  radius 0.05
+                }
+              }
+            ]
+          }
+          DistanceSensor {
+            translation -0.25 0.07 0
+            rotation 0 0 1 0.261799
+            children [
+              Transform {
+                rotation 0 0 1 1.5708
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 1 0.99028 0.0584421
+                      roughness 0.5
+                      metalness 0.5
+                      emissiveColor 1 0.99028 0.0584421
+                      emissiveIntensity 0.2
+                    }
+                    geometry Cone {
+                      bottomRadius 0.02
+                      height 0.1
+                    }
+                  }
+                ]
+              }
+            ]
+            name "endRangeSensor"
+            lookupTable [
+              0 0 0
+              0.9 0.9 0
+            ]
+            numberOfRays 5
+            aperture 0.5
+            resolution 0.001
+          }
+        ]
+        name "link1"
+        boundingObject USE link1Shape
+        physics Physics {
+          density -1
+          mass 2
+        }
+      }
+    }
+  ]
+  name "impeller"
+  boundingObject USE baseObject
+  controller "impeller"
+}

@@ -1,0 +1,244 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.2994195144234726 0.4501928793641616 0.8412338115840431 2.18893833577019
+  position 1.1687479458583148 0.5203935199223213 0.8904886319057939
+}
+Background {
+  skyColor [
+    0.1 0.1 0.1
+  ]
+}
+DirectionalLight {
+  direction 0.4 -0.5 -1
+  intensity 3
+  castShadows TRUE
+}
+RectangleArena {
+  rotation 1 0 0 1.5708
+  floorSize 2 2
+}
+Robot {
+  rotation 0 0 1 1.5708
+  children [
+    DEF baseObject Transform {
+      translation 0 0 0.05
+      rotation 1 0 0 1.5708
+      children [
+        Shape {
+          appearance PaintedWood {
+            colorOverride 0.21529 0.543008 0.99855
+          }
+          geometry Cylinder {
+            height 0.1
+            radius 0.3
+          }
+        }
+      ]
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor 0 0 0.1
+      }
+      device [
+        PositionSensor {
+          name "joint1"
+        }
+        RotationalMotor {
+          name "motor1"
+          acceleration 2
+          maxVelocity 50
+          minPosition -10
+          maxPosition 10
+          maxTorque 20
+        }
+      ]
+      endPoint Solid {
+        translation 0.3 0 0.1
+        rotation 1 0 0 0
+        children [
+          DEF link1Shape Transform {
+            translation 0.01 0 0
+            rotation 0 0 1 -1.5707953071795862
+            children [
+              Shape {
+                appearance PaintedWood {
+                  colorOverride 0.990494 0.516915 0.468254
+                }
+                geometry Cylinder {
+                  height 0.02
+                  radius 0.05
+                }
+              }
+            ]
+          }
+          Transform {
+            translation 0.01 0 0
+            rotation 0 0 1 -1.5707953071795862
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0.511208 0.757198 0.00920119
+                }
+                geometry Box {
+                  size 0.02 0.03 0.02
+                }
+              }
+            ]
+          }
+        ]
+        name "link1"
+        boundingObject USE link1Shape
+        physics Physics {
+          density -1
+          mass 0.5
+        }
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis -0.5 0.866025 0
+        anchor 0 0 0.1
+      }
+      device [
+        PositionSensor {
+          name "joint2"
+        }
+        RotationalMotor {
+          name "motor2"
+          acceleration 2
+          maxVelocity 50
+          minPosition -10
+          maxPosition 10
+          maxTorque 20
+        }
+      ]
+      endPoint Solid {
+        translation -0.15 0.259808 0.1
+        rotation 0 0 1 2.0944
+        children [
+          DEF link2Shape Transform {
+            translation 0.01 0 0
+            rotation 0 0 1 -1.5707953071795862
+            children [
+              Shape {
+                appearance PaintedWood {
+                  colorOverride 0.990494 0.516915 0.468254
+                }
+                geometry Cylinder {
+                  height 0.02
+                  radius 0.05
+                }
+              }
+            ]
+          }
+          Transform {
+            translation 0.01 0 0
+            rotation 0 0 1 -1.5707953071795862
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0.511208 0.757198 0.00920119
+                }
+                geometry Box {
+                  size 0.02 0.03 0.02
+                }
+              }
+            ]
+          }
+        ]
+        name "link2"
+        boundingObject USE link2Shape
+        physics Physics {
+          density -1
+          mass 0.5
+        }
+      }
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis -0.5 -0.866025 0
+        anchor 0 0 0.1
+      }
+      device [
+        PositionSensor {
+          name "joint3"
+        }
+        RotationalMotor {
+          name "motor3"
+          acceleration 2
+          maxVelocity 50
+          minPosition -10
+          maxPosition 10
+          maxTorque 20
+        }
+      ]
+      endPoint Solid {
+        translation -0.15 -0.259808 0.1
+        rotation 0 0 1 4.1887902047863905
+        children [
+          DEF link3Shape Transform {
+            translation 0.01 0 0
+            rotation 0 0 1 -1.5707953071795862
+            children [
+              Shape {
+                appearance PaintedWood {
+                  colorOverride 0.990494 0.516915 0.468254
+                }
+                geometry Cylinder {
+                  height 0.02
+                  radius 0.05
+                }
+              }
+            ]
+          }
+          Transform {
+            translation 0.01 0 0
+            rotation 0 0 1 -1.5707953071795862
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0.511208 0.757198 0.00920119
+                }
+                geometry Box {
+                  size 0.02 0.03 0.02
+                }
+              }
+            ]
+          }
+        ]
+        name "link3"
+        boundingObject USE link3Shape
+        physics Physics {
+          density -1
+          mass 0.5
+        }
+      }
+    }
+  ]
+  name "conveyor"
+  boundingObject USE baseObject
+  controller "conveyor"
+}
+Solid {
+  translation 0 0 0.17
+  children [
+    DEF manipShape Shape {
+      appearance PBRAppearance {
+        baseColor 0.341176 1 0.819608
+        transparency 0.05
+        roughness 0.3
+      }
+      geometry Box {
+        size 0.8 0.8 0.025
+      }
+    }
+  ]
+  name "manipulandum"
+  boundingObject USE manipShape
+  physics Physics {
+    density -1
+    mass 2
+  }
+}

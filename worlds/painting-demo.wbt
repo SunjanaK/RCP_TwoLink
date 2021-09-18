@@ -1,0 +1,28 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.9946904267296599 0.05907055992214861 0.0842711333900922 0.9572079195512224
+  position 0.5875313047884941 -3.5405787018985393 2.687298815416066
+  follow "two_link"
+}
+Background {
+  skyColor [
+    0.1 0.1 0.1
+  ]
+}
+DirectionalLight {
+  direction 0.4 -0.5 -1
+  intensity 3
+  castShadows TRUE
+}
+RectangleArena {
+  rotation 1 0 0 1.5708
+  floorSize 2 2
+}
+two-link {
+  controller "two_link_ik"
+  name "two_link"
+}
+painting {
+}

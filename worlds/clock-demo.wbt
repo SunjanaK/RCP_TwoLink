@@ -1,0 +1,24 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.8256596659665139 -0.26329357075893606 -0.49896153317973696 5.348825507009967
+  position 2.735743868052907 -1.2581720454347947 1.3884753448405622
+}
+Background {
+  skyColor [
+    0.1 0.1 0.1
+  ]
+}
+DirectionalLight {
+  direction 0.4 -0.5 -1
+  intensity 3
+  castShadows TRUE
+}
+RectangleArena {
+  rotation 1 0 0 1.5708
+  floorSize 6 2
+}
+clock {
+  translation 2 0 0
+}

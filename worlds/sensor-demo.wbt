@@ -1,0 +1,49 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.7956172146836858 -0.33074395196401235 -0.5075447624970639 5.059671301237595
+  position 0.2705865688105491 -2.056197071310425 1.9400513654396496
+}
+Background {
+  skyColor [
+    0.0432593 0.0951247 0.188251
+  ]
+}
+DirectionalLight {
+  direction 1 -1 -1
+  intensity 3
+  castShadows TRUE
+}
+RectangleArena {
+  rotation 1 0 0 1.5708
+  floorSize 6 2
+}
+DEF obstacle Solid {
+  translation -2.8 0 0
+  children [
+    DEF cylinderShape Transform {
+      translation 0 0 0.3
+      rotation 1 0 0 1.5708
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.714443 0 0.998718
+            roughness 0.2
+            metalness 0.7
+          }
+          geometry Cylinder {
+            height 0.6
+            radius 0.15
+          }
+        }
+      ]
+    }
+  ]
+  boundingObject USE cylinderShape
+}
+two-link {
+  translation -1.5 0 0
+  controller "two_link_sensor"
+  name "left-two-link"
+}

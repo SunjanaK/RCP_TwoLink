@@ -1,0 +1,72 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.41653792391667016 -0.43210872574256093 -0.7998613674108349 1.8085341040278622
+  position -7.251708533670205 -0.23366957352737672 4.375374365352375
+  follow "Wobbly 1"
+  followType "None"
+}
+Background {
+  skyColor [
+    0.1 0.1 0.1
+  ]
+}
+DirectionalLight {
+  direction 0.4 -0.5 -1
+  intensity 3
+  castShadows TRUE
+}
+RectangleArena {
+  rotation 1 0 0 1.5708
+  floorSize 6 6
+  floorTileSize 1 1
+  wallHeight 0.3
+}
+delegate {
+  customData "Wobbly 1"
+}
+wobbly {
+  name "Wobbly 1"
+  customData "leader"
+}
+wobbly {
+  translation 0 0.5 0
+  name "Wobbly 2"
+}
+wobbly {
+  translation 0 1 0
+  name "Wobbly 3"
+}
+proxy {
+  translation -2.5 -2 0
+  name "proxy1"
+}
+proxy {
+  translation -2.5 -1.5 0
+  name "proxy2"
+}
+proxy {
+  translation -2.5 -1 0
+  name "proxy3"
+}
+proxy {
+  translation -2.5 -0.5 0
+  name "proxy4"
+}
+proxy {
+  translation -2.5 0 0
+  name "proxy5"
+}
+proxy {
+  translation -2.5 0.5 0
+  name "proxy6"
+}
+proxy {
+  translation -2.5 1 0
+  name "proxy7"
+}
+proxy {
+  translation -2.5 1.5 0
+  name "proxy8"
+}

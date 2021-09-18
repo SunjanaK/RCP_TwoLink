@@ -1,0 +1,34 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation 0 0 -1 0.01000000000000101
+  position 0.006723628247854774 0.00652826067302259 6.203497162704744
+  follow "center-two-link"
+}
+Background {
+  skyColor [
+    0.1 0.1 0.1
+  ]
+}
+DirectionalLight {
+  direction 0.4 -0.5 -1
+  intensity 3
+  castShadows TRUE
+}
+RectangleArena {
+  rotation 1 0 0 1.5708
+  floorSize 3 2
+  floorAppearance Parquetry {
+  }
+}
+two-link {
+  translation 0.43 -0.52 0
+  rotation 0 0 1 3.141592653589793
+  name "center-two-link"
+}
+two-link {
+  translation -0.63 0.21 0
+  controller "two_link_sensor"
+  name "left-two-link"
+}

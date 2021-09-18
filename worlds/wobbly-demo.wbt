@@ -1,0 +1,88 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.6617063565375155 -0.4229612905208364 -0.6190706296044055 1.6027858381451767
+  position -2.9633373889080095 -1.532390518915152 1.5376671946252038
+  follow "Wobbly 1"
+  followType "None"
+}
+Background {
+  skyColor [
+    0.1 0.1 0.1
+  ]
+}
+DirectionalLight {
+  direction 0.4 -0.5 -1
+  intensity 3
+  castShadows TRUE
+}
+RectangleArena {
+  rotation 1 0 0 1.5708
+  floorSize 6 6
+  floorTileSize 1 1
+  wallHeight 0.3
+}
+DEF ramp Solid {
+  translation 0.5 0.25 0
+  rotation 1 0 0 1.5708
+  children [
+    DEF rampShape Shape {
+      appearance PBRAppearance {
+        baseColor 0.616007 0 0.038468
+        roughness 1
+        metalness 0
+      }
+      geometry ElevationGrid {
+        height [
+          0, 0.1, 0, 0.1
+        ]
+        xDimension 2
+        zDimension 2
+        zSpacing 0.5
+      }
+    }
+  ]
+  name "solid(1)"
+  boundingObject USE rampShape
+}
+clock {
+  translation 3 0 0.75
+  rotation -0.577349935856137 0.577349935856137 0.5773509358560258 -2.094395307179586
+  controller "clock_pid"
+}
+DEF obstacle Solid {
+  translation -2.8 0 0
+  children [
+    DEF cylinderShape Transform {
+      translation 0 0 0.3
+      rotation 1 0 0 1.5708
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.714443 0 0.998718
+            roughness 0.2
+            metalness 0.7
+          }
+          geometry Cylinder {
+            height 0.6
+            radius 0.15
+          }
+        }
+      ]
+    }
+  ]
+  boundingObject USE cylinderShape
+}
+wobbly {
+  name "Wobbly 1"
+  customData "leader"
+}
+wobbly {
+  translation 0 0.5 0
+  name "Wobbly 2"
+}
+wobbly {
+  translation 0 1 0
+  name "Wobbly 3"
+}

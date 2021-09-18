@@ -1,0 +1,167 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.0035044707194137113 0.7008883030884842 0.7132624378717289 3.1344600000114275
+  position 9.632790145171372e-16 6.941156817333119 -7.706232116137097e-16
+}
+Background {
+  skyColor [
+    0.0432593 0.0951247 0.188251
+  ]
+}
+DirectionalLight {
+  direction 1 -1 -1
+  intensity 3
+  castShadows TRUE
+}
+RectangleArena {
+  rotation 1 0 0 0.7854003061004253
+  floorSize 4 3
+  floorAppearance Parquetry {
+    type "dark strip"
+  }
+  wallHeight 0.2
+}
+DEF ball Solid {
+  children [
+    DEF ballShape Transform {
+      translation 0 0 0.3
+      rotation 1 0 0 1.5708
+      children [
+        Shape {
+          appearance PBRAppearance {
+            roughness 0.2
+            metalness 0.7
+            emissiveColor 0.666667 1 1
+          }
+          geometry Sphere {
+            radius 0.1
+          }
+        }
+      ]
+    }
+  ]
+  boundingObject USE ballShape
+  physics Physics {
+    density -1
+    mass 0.1
+  }
+}
+Robot {
+  translation 0.0599993 0.0919258 -0.400045
+  rotation -0.9456058955006255 -0.12449098624243964 -0.3005519667858537 0.8257253061004253
+  children [
+    Receiver {
+    }
+    Emitter {
+    }
+    DEF baseObject Transform {
+      translation 0 0 0.1
+      rotation 1 0 0 1.5708
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.21529 0.543008 0.99855
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.2
+            radius 0.2
+          }
+        }
+      ]
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        position 0.24781593707213811
+        axis 0 0 1
+      }
+      device [
+        PositionSensor {
+          name "joint1"
+        }
+        RotationalMotor {
+          name "motor1"
+          maxVelocity 30
+        }
+      ]
+      endPoint Solid {
+        translation 0.24786912179290935 0.06109521907003471 0.2798221171353675
+        rotation -3.63783900397386e-05 1.9086747775808603e-05 0.9999999991561543 0.4999999999999977
+        children [
+          DEF link1Shape Transform {
+            translation -0.27 9.91765e-07 0
+            rotation 0 0 -1 1.5708
+            children [
+              Shape {
+                appearance DEF redAppearance PBRAppearance {
+                  baseColor 0 0.243137 0.356863
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 5
+                  radius 0.125
+                }
+              }
+            ]
+          }
+          Transform {
+            translation -0.25 0 0
+            rotation 1 0 0 1.5708
+            children [
+              Shape {
+                appearance USE redAppearance
+                geometry Cylinder {
+                  height 0.1
+                  radius 0.05
+                }
+              }
+            ]
+          }
+          DistanceSensor {
+            translation -0.25 0.07 0
+            rotation 0 0 1 0.261799
+            children [
+              Transform {
+                rotation 0 0 1 1.5708
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 1 0.99028 0.0584421
+                      roughness 0.5
+                      metalness 0.5
+                      emissiveColor 1 0.99028 0.0584421
+                      emissiveIntensity 0.2
+                    }
+                    geometry Cone {
+                      bottomRadius 0.02
+                      height 0.1
+                    }
+                  }
+                ]
+              }
+            ]
+            name "endRangeSensor"
+            lookupTable [
+              0 0 0
+              0.9 0.9 0
+            ]
+            numberOfRays 5
+            aperture 0.5
+            resolution 0.001
+          }
+        ]
+        name "link1"
+        boundingObject USE link1Shape
+        physics Physics {
+          density -1
+          mass 2
+        }
+      }
+    }
+  ]
+  name "impeller"
+  boundingObject USE baseObject
+  controller "impeller"
+}

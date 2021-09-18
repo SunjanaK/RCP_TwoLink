@@ -1,0 +1,161 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.1297234145059892 0.5459119370702683 0.8277390849132925 2.7234671260441967
+  position 1.7870404774717816 3.2844836209794273 2.3418665277932647
+}
+Background {
+  skyColor [
+    0.1 0.1 0.1
+  ]
+}
+DirectionalLight {
+  direction 0.4 -0.5 -1
+  intensity 3
+  castShadows TRUE
+}
+RectangleArena {
+  rotation 1 0 0 1.5708
+  floorSize 2 2
+}
+Robot {
+  rotation 0 0 1 1.5708
+  children [
+    DEF baseObject Transform {
+      translation 0 0 0.6
+      children [
+        Shape {
+          appearance PaintedWood {
+            colorOverride 0.21529 0.543008 0.99855
+          }
+          geometry Box {
+            size 0.3 0.5 1.2
+          }
+        }
+      ]
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor 0 0 1
+      }
+      device [
+        PositionSensor {
+          name "joint1"
+        }
+        RotationalMotor {
+          name "motor1"
+          acceleration 2
+          maxVelocity 3.14
+          minPosition -10
+          maxPosition 10
+          maxTorque 20
+        }
+      ]
+      endPoint Solid {
+        translation 0.15 0 1
+        rotation 1 0 0 0
+        children [
+          DEF link1Shape Transform {
+            translation 0.08 0 0.1
+            children [
+              Shape {
+                appearance PaintedWood {
+                  colorOverride 0.990494 0.516915 0.468254
+                }
+                geometry Box {
+                  size 0.1 0.3 1
+                }
+              }
+            ]
+          }
+          HingeJoint {
+            jointParameters HingeJointParameters {
+              anchor 0 0 0.5
+              dampingConstant 0.1
+            }
+            device [
+              PositionSensor {
+                name "joint2A"
+              }
+            ]
+            endPoint Solid {
+              translation 0.13 0 0.5
+              rotation 1 0 0 0
+              children [
+                DEF link2AShape Transform {
+                  translation 0.07 0 0.2
+                  children [
+                    Shape {
+                      appearance PaintedWood {
+                        colorOverride 0.413001 1 0.33489
+                      }
+                      geometry Box {
+                        size 0.1 0.1 0.6
+                      }
+                    }
+                  ]
+                }
+              ]
+              name "link2A"
+              boundingObject USE link2AShape
+              physics Physics {
+                density -1
+                mass 0.5
+              }
+            }
+          }
+          HingeJoint {
+            jointParameters HingeJointParameters {
+              anchor 0 0 -0.3
+              dampingConstant 0.1
+            }
+            device [
+              PositionSensor {
+                name "joint2B"
+              }
+            ]
+            endPoint Solid {
+              translation 0.13 0 -0.3
+              rotation 1 0 0 0
+              children [
+                DEF link2BShape Transform {
+                  translation 0.07 0 -0.15
+                  children [
+                    Shape {
+                      appearance PaintedWood {
+                        colorOverride 0.413001 1 0.33489
+                      }
+                      geometry Box {
+                        size 0.1 0.1 0.4
+                      }
+                    }
+                  ]
+                }
+              ]
+              name "link2B"
+              boundingObject USE link2BShape
+              physics Physics {
+                density -1
+                mass 0.5
+              }
+            }
+          }
+        ]
+        name "link1"
+        boundingObject USE link1Shape
+        physics Physics {
+          density -1
+          mass 0.5
+        }
+      }
+    }
+  ]
+  name "pendulum_1_2"
+  boundingObject USE baseObject
+  physics Physics {
+    density -1
+    mass 20
+  }
+  controller "pendulum_1_2"
+}

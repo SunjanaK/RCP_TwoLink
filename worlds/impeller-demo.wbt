@@ -1,0 +1,192 @@
+#VRML_SIM R2021b utf8
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.933342316519934 0.2063882968775071 0.29372774997470935 5.208457686185839
+  position -1.0102581762862377 -2.7179026672292954 1.6223133741225986
+}
+Background {
+  skyColor [
+    0.0432593 0.0951247 0.188251
+  ]
+}
+DirectionalLight {
+  direction 1 -1 -1
+  intensity 3
+  castShadows TRUE
+}
+RectangleArena {
+  rotation 1 0 0 1.5708
+  floorSize 2 2
+}
+Solid {
+  children [
+    DEF gridShape Transform {
+      translation -1 1 -0.01
+      rotation 1 0 0 1.5708
+      scale 1 0.05 1
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.177844 0.665446 0.673777
+            roughness 0.5
+            metalness 0.8
+          }
+          geometry ElevationGrid {
+            height [
+              1, 1, 1, 1, 1, 1, 0, 0, 0, 1
+              1, 0, 0, 0, 1, 1, 0, 0, 0, 1
+              1, 1, 1, 1, 1
+            ]
+            xDimension 5
+            xSpacing 0.5
+            zDimension 5
+            zSpacing 0.5
+          }
+        }
+      ]
+    }
+  ]
+  name "slopes"
+  boundingObject USE gridShape
+}
+DEF ball Solid {
+  translation -0.74 0.77 0
+  children [
+    DEF ballShape Transform {
+      translation 0 0 0.3
+      rotation 1 0 0 1.5708
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.714443 0 0.998718
+            roughness 0.2
+            metalness 0.7
+          }
+          geometry Sphere {
+            radius 0.1
+          }
+        }
+      ]
+    }
+  ]
+  boundingObject USE ballShape
+  physics Physics {
+    density -1
+    mass 0.25
+  }
+}
+Robot {
+  translation 0 0 -0.195
+  children [
+    Receiver {
+    }
+    Emitter {
+    }
+    DEF baseObject Transform {
+      translation 0 0 0.1
+      rotation 1 0 0 1.5708
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.21529 0.543008 0.99855
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.2
+            radius 0.2
+          }
+        }
+      ]
+    }
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 1
+      }
+      device [
+        PositionSensor {
+          name "joint1"
+        }
+        RotationalMotor {
+          name "motor1"
+          maxVelocity 30
+        }
+      ]
+      endPoint Solid {
+        translation 0.25037941792843155 -2.6170333300309934e-05 0.24998613703432332
+        rotation 0.1635356398370922 0.9865374268103365 2.3479387359999444e-06 3.2991857379401214e-06
+        children [
+          DEF link1Shape Transform {
+            rotation 0 0 -1 1.5708
+            children [
+              Shape {
+                appearance DEF redAppearance PBRAppearance {
+                  baseColor 0.990494 0.516915 0.468254
+                  metalness 0
+                }
+                geometry Cylinder {
+                  height 0.5
+                  radius 0.05
+                }
+              }
+            ]
+          }
+          Transform {
+            translation -0.25 0 0
+            rotation 1 0 0 1.5708
+            children [
+              Shape {
+                appearance USE redAppearance
+                geometry Cylinder {
+                  height 0.1
+                  radius 0.05
+                }
+              }
+            ]
+          }
+          DistanceSensor {
+            translation -0.25 0.07 0
+            rotation 0 0 1 0.261799
+            children [
+              Transform {
+                rotation 0 0 1 1.5708
+                children [
+                  Shape {
+                    appearance PBRAppearance {
+                      baseColor 1 0.99028 0.0584421
+                      roughness 0.5
+                      metalness 0.5
+                      emissiveColor 1 0.99028 0.0584421
+                      emissiveIntensity 0.2
+                    }
+                    geometry Cone {
+                      bottomRadius 0.02
+                      height 0.1
+                    }
+                  }
+                ]
+              }
+            ]
+            name "endRangeSensor"
+            lookupTable [
+              0 0 0
+              0.9 0.9 0
+            ]
+            numberOfRays 5
+            aperture 0.5
+            resolution 0.001
+          }
+        ]
+        name "link1"
+        boundingObject USE link1Shape
+        physics Physics {
+          density -1
+          mass 2
+        }
+      }
+    }
+  ]
+  name "impeller"
+  boundingObject USE baseObject
+  controller "impeller"
+}
