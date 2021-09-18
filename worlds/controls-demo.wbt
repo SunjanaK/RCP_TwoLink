@@ -2,8 +2,8 @@
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.9530966440293307 -0.20345958314002413 -0.22407807828637494 6.026739286717442
-  position 0.39449754708062545 -0.9399630232358412 4.497893272800451
+  orientation -0.9134672453215811 -0.014710378055580599 0.4066462793412285 5.826116431286975
+  position 0.5122294925999724 -3.059801563609489 6.355038241847713
   follow "center-two-link"
 }
 Background {
@@ -20,14 +20,34 @@ RectangleArena {
   rotation 1 0 0 1.5708
   floorSize 6 2
 }
-Shape {
-  appearance PBRAppearance {
-    baseColor 0.3 1 1
-  }
-  geometry Cylinder {
-    height 0.3
-    radius 0.05
-  }
+DEF obstacle Solid {
+  translation 1.36 0.601428 0.112534
+  rotation 1 0 0 1.309
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Cylinder {
+        height 0.6
+        radius 0.16
+      }
+    }
+  ]
+  name "solid(1)"
+}
+DEF obstacle Solid {
+  translation 1.39 -0.564948 0.280116
+  rotation 1 0 0 1.309
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Cylinder {
+        height 0.6
+        radius 0.16
+      }
+    }
+  ]
 }
 two-link {
   hidden linearVelocity_3 0.045588314545974354 0.18213744848442523 1.6425854514160972e-09
@@ -35,13 +55,6 @@ two-link {
   hidden linearVelocity_4 0.13018209611903028 0.4831115877651385 -1.145008696426633e-07
   hidden angularVelocity_4 -2.46396897137647e-06 3.1277668796673493e-07 -0.5000001805408324
   name "center-two-link"
-}
-clock {
-  hidden linearVelocity_1 0.009757717633685877 -0.0012959805545638109 1.9911838971830485e-11
-  hidden angularVelocity_1 -2.9230326105897436e-10 -7.942459008062427e-09 -0.39364155206162327
-  hidden linearVelocity_2 -0.0014951840751431036 -0.0008531945926773105 -4.465225832701228e-13
-  hidden angularVelocity_2 1.7915540161313375e-09 -3.0829782969704443e-09 -0.09060101344460036
-  translation 2 0 0
 }
 two-link {
   hidden linearVelocity_3 0.159763389760668 -0.09862996776643151 -3.077573722098089e-13
