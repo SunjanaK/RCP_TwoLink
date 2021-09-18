@@ -1,0 +1,35 @@
+#VRML_SIM R2021b utf8
+# Disembodied supervisor robot which can communicate between the
+# local radio network and a remote MQTT server.  It manages
+# the position of local proxy robots representing remote participants.
+# documentation url: https://courses.ideate.cmu.edu/16-375
+# license: No copyright, 2020 Garth Zeglin.  This file is explicitly placed in the public domain.
+PROTO delegate [
+  field SFVec3f    translation  0 0 0
+  field SFRotation rotation     0 1 0 0
+  field SFString   controller   "disembod"
+  field SFString   name         "delegate"
+  field SFString   customData   "Wobbly"
+]
+{
+  Robot {
+    # connect properties to user-visible data fields
+    translation IS translation
+    rotation IS rotation
+    controller IS controller
+    name IS name
+    customData IS customData
+
+    # enable supervisor mode so this robot can directly query simulation state
+    # and configure proxy robots
+    supervisor TRUE
+
+    children [
+      # add a default radio receiver and transmitter
+      Receiver {
+      }
+      Emitter {
+      }
+    ]
+  }
+}

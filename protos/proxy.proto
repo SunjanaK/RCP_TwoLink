@@ -1,0 +1,161 @@
+#VRML_SIM R2021b utf8
+# Proxy robot body to represent a remote robot, based on the wobbly robot body.
+# This robot has no physics but is positioned by a delegate in response to
+# position data reported over the network.
+# documentation url: https://courses.ideate.cmu.edu/16-375
+# license: No copyright, 2020 Garth Zeglin.  This file is explicitly placed in the public domain.
+PROTO proxy [
+  field SFVec3f    translation  0 0 0
+  field SFRotation rotation     0 1 0 0
+  field SFString   controller   ""
+  field SFString   name         "proxy"
+  field SFFloat    wheelRadius  0.1
+  field SFFloat    axleLength   0.14
+  field SFColor    bodyColor    0.8 0.8 0.8
+  field SFColor    wheelColor   0.3 0.3 0.3
+  field SFString   customData   ""
+]
+{
+  Robot {
+    # connect properties to user-visible data fields
+    translation IS translation
+    rotation IS rotation
+    controller IS controller
+    name IS name
+    customData IS customData
+
+    # calculate derived parameters
+    %{
+      local counterweightHeight = fields.wheelRadius.value
+      local counterweightOffset = 0.75*fields.wheelRadius.value
+      local counterweightTop    = 1.25*fields.wheelRadius.value
+      local sensorHeight        = 3*fields.wheelRadius.value
+      local stalkHeight         = sensorHeight - counterweightTop
+      local stalkOffset         = counterweightTop + 0.5*stalkHeight
+    }%
+
+    children [
+      # The body group contains three cylinders: the massive counterweight at
+      # bottom, a thin stalk rising above it, topped by the sensor disc.
+      # All these shapes participate in collision; the axle is kept separate
+      # as it is just for rendering.
+      DEF bodyShape Group {
+        children [
+          # counterweight
+          Transform {
+            translation 0 0 %{= counterweightOffset }%
+            rotation 1 0 0 1.5708
+            children [
+              Shape {
+                appearance DEF bodyAppearance PBRAppearance {
+                  baseColor IS bodyColor
+                  roughness 0.5
+                  metalness 0.5
+                }
+
+                geometry Cylinder {
+                  height %{= counterweightHeight }%
+                  radius 0.05
+                }
+              }
+            ]
+          }
+  	  # sensor disc
+          Transform {
+            translation 0 0 %{= sensorHeight }%
+            rotation 1 0 0 1.5708
+            children [
+              Shape {
+                appearance USE bodyAppearance
+                geometry Cylinder {
+                  height 0.01
+                  radius 0.025
+                }
+              }
+            ]
+          }
+	  # stalk
+          Transform {
+            translation 0 0 %{= stalkOffset }%
+            rotation 1 0 0 1.5708
+            children [
+              Shape {
+                appearance USE bodyAppearance
+                geometry Cylinder {
+                  height %{= stalkHeight }%
+                  radius 0.01
+                }
+              }
+            ]
+          }
+        ]
+      }
+      # Visible axle shape, not part of the boundingObject.
+      DEF axleShape Transform {
+        translation 0 0 %{= fields.wheelRadius.value }%
+        children [
+          Shape {
+            appearance USE bodyAppearance
+            geometry Cylinder {
+              height %{= fields.axleLength.value + 0.02 }%
+              radius 0.005
+            }
+          }
+        ]
+      }
+      # Define the left wheel axis, pointing in the +Y direction along the axle.
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 1 0
+          anchor 0 0 %{= fields.wheelRadius.value }%
+        }
+	# Define the left wheel solid, offset along +Y along the axle.
+        endPoint DEF leftWheel Solid {
+          translation 0 %{= 0.5*fields.axleLength.value }% %{= fields.wheelRadius.value }%
+          rotation 0 -1 0 0
+          children [
+            # Define the left wheel shape and appearance, which is used by the right wheel solid.
+            DEF wheelShape Transform {
+              rotation 0 0 1 0
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor IS wheelColor
+                    roughness 0.5
+                    metalness 0.5
+                  }
+                  geometry Cylinder {
+                    height 0.01
+                    radius %{= fields.wheelRadius.value }%
+                  }
+                }
+              ]
+            }
+          ]
+          name "left wheel"
+          boundingObject USE wheelShape
+        }
+      }
+      # Define the right wheel axis, also pointing in the +Y direction along the axle
+      # so positive wheel rotations will move forward.
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 1 0
+          anchor 0 0 %{= fields.wheelRadius.value }%
+        }
+	# Define the right wheel solid, offset along -Y along the axle.
+	# The wheel shape is inherited from the left wheel.
+        endPoint DEF rightWheel Solid {
+          translation 0 %{= -0.5*fields.axleLength.value }% %{= fields.wheelRadius.value }%
+          rotation 0 0 1 3.14159
+          children [
+            USE wheelShape
+          ]
+          name "right wheel"
+          boundingObject USE wheelShape
+        }
+      }
+    ] # close children list of Robot
+    boundingObject USE bodyShape
+  } # close Robot
+}

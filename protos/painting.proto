@@ -1,0 +1,61 @@
+#VRML_SIM R2021b utf8
+# documentation url: https://courses.ideate.cmu.edu/16-375
+# A 'robot' emulating a paintable floor surface.
+# license: No copyright, 2020 Garth Zeglin.  This file is explicitly placed in the public domain.
+PROTO painting [
+  field SFVec3f    translation  0 0 0.01
+  field SFRotation rotation     1 0 0 0
+  field SFString   controller   "painting"
+  field SFString   name         "floor_painting"
+  field SFString   customData   ""
+]
+{
+  Robot {
+    # connect properties to user-visible data fields
+    translation IS translation
+    rotation IS rotation
+    controller IS controller
+    name IS name
+    customData IS customData
+
+    children [
+      Display {
+        translation 0 0 0.01
+        children [
+          Transform {
+            rotation 1 0 0 1.5708
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColorMap ImageTexture {
+                    url [
+                      "textures/blank.jpg"
+                    ]
+                    filtering 0
+                  }
+                  roughness 0.5
+                  metalness 0.3
+                  emissiveColor 1 1 1
+                  emissiveIntensity 0
+                }
+                geometry Plane {
+  		  # The paintable surface size in meters.
+                  size 2 2
+                }
+                castShadows FALSE
+              }
+            ]
+          }
+        ]
+        name "painting"
+	# The paintable surface size in pixels.
+        width 256
+        height 256
+      }
+      # add a radio receiver on the 'painting' channel
+      Receiver {
+        channel 1
+      }
+    ]
+  }
+}

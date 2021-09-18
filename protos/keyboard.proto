@@ -1,0 +1,85 @@
+#VRML_SIM R2021b utf8
+# documentation url: https://courses.ideate.cmu.edu/16-375
+# Piano keyboard robot.  Each key has a limit stop, return spring, and a position sensor.
+# license: No copyright, 2020 Garth Zeglin.  This file is explicitly placed in the public domain.
+PROTO keyboard [
+  field SFVec3f    translation  0 0 0
+  field SFRotation rotation     0 1 0 0
+  field SFString   controller   "keyboard"
+  field SFString   name         "keyboard"
+  field SFInt32    numkeys      8
+  field SFString   customData   ""
+]
+{
+  Robot {
+    # connect properties to user-visible data fields
+    translation IS translation
+    rotation IS rotation
+    controller IS controller
+    name IS name
+    customData IS customData
+
+    # calculate derived parameters
+    %{
+      local key_x_spacing = 0.03
+      local basewidth = 0.03 + fields.numkeys.value * key_x_spacing
+      local key1_x = -0.5 * basewidth + key_x_spacing
+    }%
+
+    children [
+      Transform {
+        translation 0 0 0.015
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.104128 0.105287 0.105272
+              roughness 0.2
+              metalness 0.8
+            }
+            geometry Box {
+              size %{=basewidth }% 0.15 0.03
+            }
+          }
+        ]
+      }
+      # loop to create each key
+      %{ for k = 1, fields.numkeys.value do }%
+      %{ local key_name = "\"key" .. k .. "\"" }%
+      %{ local def_name = "key" .. k }%
+      
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          anchor 0 0.07 0.05
+          maxStop 0.1
+          springConstant 2
+        }
+        device [
+          PositionSensor {
+            name %{= key_name }%
+          }
+        ]
+        endPoint Solid {
+          name %{= key_name }%
+          translation %{= key1_x + (k-1) * key_x_spacing }% 0 0.05
+          rotation 1 0 0 0
+          children [
+            DEF %{= def_name }% Shape {
+              appearance PBRAppearance {
+                roughness 0.8
+              }
+              geometry Box {
+                size 0.02 0.1 0.01
+              }
+            }
+          ]
+          boundingObject USE %{= def_name }%
+          physics Physics {
+	     density -1
+	     mass 0.1
+          }
+        }
+      }
+      %{ end }% # end loop to create each key
+    ]
+  }
+}

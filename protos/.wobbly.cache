@@ -1,0 +1,11 @@
+Webots Proto Cache File version 1.5
+protoFileHash: 31b71aec23c922764cc1a9e4c8919222
+needsRobotAncestor: 1
+baseType: Robot
+slotType: 
+parameters: translation,rotation,controller,name,wheelRadius,axleLength,bodyColor,wheelColor,customData
+tags: 
+license:  No copyright, 2020-2021 Garth Zeglin.  This file is explicitly placed in the public domain.
+licenseUrl: 
+documentationUrl: https://courses.ideate.cmu.edu/16-375
+info: Two-wheeled\sdifferential-drive\smobile\srobot\swith\sa\slow\scenter\sof\sgravity.\s\sThe\nbody\sis\sdesigned\swith\senough\sground\sclearance\sto\stilt,\sbut\sthe\slow\scenter\sof\nmass\swill\swobble\sit\sback\supright.\s\sThe\sbody\sincludes\sa\smast\swith\stwo\sdistance\nsensors,\sa\sradio\sreceiver\sand\semitter,\sand\sa\sGPS\sreceiver.\s\sEach\swheel\shas\nboth\sa\srotational\smotor\sand\sa\sposition\ssensor.\sThe\sshape\sis\sconstructed\nentirely\sof\sprimitive\scylinders.

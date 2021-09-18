@@ -1,0 +1,11 @@
+Webots Proto Cache File version 1.5
+protoFileHash: dcde13db7348cacd2833e78d94393fb3
+needsRobotAncestor: 1
+baseType: Robot
+slotType: 
+parameters: translation,rotation,link1Length,link2Length,controller,name,customData
+tags: 
+license:  No copyright, 2020-2021 Garth Zeglin.  This file is explicitly placed in the public domain.
+licenseUrl: 
+documentationUrl: https://courses.ideate.cmu.edu/16-375
+info: Planar\stwo-link\sactuated\sarm\sfor\scourse\sexercises.\s\sThe\sgraphics\suse\sonly\nprimitives\sfor\sclarity\sof\sthe\ssource.\sThe\sbase\shas\sNULL\sphysics\sso\sit\swill\sbe\nfixed\sin\splace.\sThe\stwo\slink\slengths\sare\sadjustable\sparameters\sto\sdemonstrate\nusing\sprocedural\selements\sin\sthe\sprototype.\s\sThe\slink\sphysics\sproperties\sare\nspecified\susing\sdensity\sso\sthe\sdynamics\swill\salso\sscale,\sbut\sthe\smotor\nparameters\sare\sconstant.\s\sThe\send\sincludes\sa\sdistance\ssensor\spointed\salong\sthe\naxis.

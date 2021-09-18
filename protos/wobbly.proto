@@ -1,0 +1,255 @@
+#VRML_SIM R2021b utf8
+# Two-wheeled differential-drive mobile robot with a low center of gravity.  The
+# body is designed with enough ground clearance to tilt, but the low center of
+# mass will wobble it back upright.  The body includes a mast with two distance
+# sensors, a radio receiver and emitter, and a GPS receiver.  Each wheel has
+# both a rotational motor and a position sensor. The shape is constructed
+# entirely of primitive cylinders.
+# documentation url: https://courses.ideate.cmu.edu/16-375
+# license: No copyright, 2020-2021 Garth Zeglin.  This file is explicitly placed in the public domain.
+PROTO wobbly [
+  field SFVec3f    translation  0 0 0
+  field SFRotation rotation     0 1 0 0
+  field SFString   controller   "wobbly"
+  field SFString   name         "Wobbly"
+  field SFFloat    wheelRadius  0.1
+  field SFFloat    axleLength   0.14
+  field SFColor    bodyColor    0.0820075 0.364731 0.8
+  field SFColor    wheelColor   1 0 0
+  field SFString   customData   ""
+]
+{
+  Robot {
+    # connect properties to user-visible data fields
+    translation IS translation
+    rotation IS rotation
+    controller IS controller
+    name IS name
+    customData IS customData
+
+    # calculate derived parameters
+    %{
+      local counterweightHeight = fields.wheelRadius.value
+      local counterweightOffset = 0.75*fields.wheelRadius.value
+      local counterweightTop    = 1.25*fields.wheelRadius.value
+      local sensorHeight        = 3*fields.wheelRadius.value
+      local stalkHeight         = sensorHeight - counterweightTop
+      local stalkOffset         = counterweightTop + 0.5*stalkHeight
+    }%
+
+    children [
+      # The body group contains three cylinders: the massive counterweight at
+      # bottom, a thin stalk rising above it, topped by the sensor disc.
+      # All these shapes participate in collision; the axle is kept separate
+      # as it is just for rendering.
+      DEF bodyShape Group {
+        children [
+          # counterweight
+          Transform {
+            translation 0 0 %{= counterweightOffset }%
+            rotation 1 0 0 1.5708
+            children [
+              Shape {
+                appearance DEF bodyAppearance PBRAppearance {
+                  baseColor IS bodyColor
+                  roughness 0.5
+                  metalness 0.5
+                }
+
+                geometry Cylinder {
+                  height %{= counterweightHeight }%
+                  radius 0.05
+                }
+              }
+            ]
+          }
+  	  # sensor disc
+          Transform {
+            translation 0 0 %{= sensorHeight }%
+            rotation 1 0 0 1.5708
+            children [
+              Shape {
+                appearance USE bodyAppearance
+                geometry Cylinder {
+                  height 0.01
+                  radius 0.025
+                }
+              }
+            ]
+          }
+	  # stalk
+          Transform {
+            translation 0 0 %{= stalkOffset }%
+            rotation 1 0 0 1.5708
+            children [
+              Shape {
+                appearance USE bodyAppearance
+                geometry Cylinder {
+                  height %{= stalkHeight }%
+                  radius 0.01
+                }
+              }
+            ]
+          }
+        ]
+      }
+      # Visible axle shape, not part of the boundingObject.
+      DEF axleShape Transform {
+        translation 0 0 %{= fields.wheelRadius.value }%
+        children [
+          Shape {
+            appearance USE bodyAppearance
+            geometry Cylinder {
+              height %{= fields.axleLength.value + 0.02 }%
+              radius 0.005
+            }
+          }
+        ]
+      }
+      # Define the left wheel axis, pointing in the +Y direction along the axle.
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 1 0
+          anchor 0 0 %{= fields.wheelRadius.value }%
+        }
+        device [
+          RotationalMotor {
+            name "left wheel motor"
+            acceleration 10
+            maxTorque 2
+          }
+          PositionSensor {
+            name "left wheel sensor"
+          }
+        ]
+	# Define the left wheel solid, offset along +Y along the axle.
+        endPoint DEF leftWheel Solid {
+          translation 0 %{= 0.5*fields.axleLength.value }% %{= fields.wheelRadius.value }%
+          rotation 0 -1 0 0
+          children [
+            # Define the left wheel shape and appearance, which is used by the right wheel solid.
+            DEF wheelShape Transform {
+              rotation 0 0 1 0
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor IS wheelColor
+                    roughness 0.5
+                    metalness 0.5
+                  }
+                  geometry Cylinder {
+                    height 0.01
+                    radius %{= fields.wheelRadius.value }%
+                  }
+                }
+              ]
+            }
+          ]
+          name "left wheel"
+          boundingObject USE wheelShape
+          physics DEF wheelPhysics Physics {
+            density 600
+          }
+        }
+      }
+      # Define the right wheel axis, also pointing in the +Y direction along the axle
+      # so positive wheel rotations will move forward.
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 1 0
+          anchor 0 0 %{= fields.wheelRadius.value }%
+        }
+        device [
+          RotationalMotor {
+            name "right wheel motor"
+            acceleration 10
+            maxTorque 2
+          }
+          PositionSensor {
+            name "right wheel sensor"
+          }
+        ]
+	# Define the right wheel solid, offset along -Y along the axle.
+	# The wheel shape is inherited from the left wheel.
+        endPoint DEF rightWheel Solid {
+          translation 0 %{= -0.5*fields.axleLength.value }% %{= fields.wheelRadius.value }%
+          rotation 0 0 1 3.14159
+          children [
+            USE wheelShape
+          ]
+          name "right wheel"
+          boundingObject USE wheelShape
+          physics USE wheelPhysics
+        }
+      }
+      # Define the two range sensors.  They are located on the sensor disc on
+      # top of the body stalk, each pointed off-axis by 1.0 radian.
+      DEF leftEyeSensor DistanceSensor {
+        translation 0.019 0.016 %{= sensorHeight }%
+        rotation 0 0 1 0.7
+        children [
+          DEF eyeShape Transform {
+            rotation 0 0 1 1.57
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0.975691 0.981481 0.0252992
+                  roughness 0.5
+                  metalness 0.5
+                }
+                geometry Cylinder {
+                  height 0.004
+                  radius 0.005
+                }
+              }
+            ]
+          }
+        ]
+        name "leftDistanceSensor"
+        lookupTable [
+          0 0.025 0
+          1 1 0
+        ]
+        numberOfRays 2
+        aperture 0.4
+      }
+      DEF rightEyeSensor DistanceSensor {
+        translation 0.019 -0.016 %{= sensorHeight }%
+        rotation 0 0 1 -0.7
+        children [
+          USE eyeShape
+        ]
+        name "rightDistanceSensor"
+        lookupTable [
+          0 0.025 0
+          1 1 0
+        ]
+        numberOfRays 2
+        aperture 0.4
+      }
+      # add a default radio receiver and transmitter
+      Receiver {
+      }
+      Emitter {
+      }
+      # add a position-sensing 'GPS' device located at the center of the axle
+      GPS {
+        translation 0 0 %{= fields.wheelRadius.value }%
+      }
+      # add a rotation-sensing 'compass' returning only the X and Y components of the North vector
+      Compass {
+        zAxis FALSE
+      }
+      # add an accelerometer located at the center of the axle to measure both gravity and reactive forces
+      Accelerometer {
+        translation 0 0 %{= fields.wheelRadius.value }%
+      }
+
+    ] # close children list of Robot
+    boundingObject USE bodyShape
+    physics Physics {
+      density -1
+      mass 3
+    }
+  } # close Robot
+}

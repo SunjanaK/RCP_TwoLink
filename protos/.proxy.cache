@@ -1,0 +1,11 @@
+Webots Proto Cache File version 1.5
+protoFileHash: fc225fb7e581b988b2bcb62c1e51ef4a
+needsRobotAncestor: 0
+baseType: Robot
+slotType: 
+parameters: translation,rotation,controller,name,wheelRadius,axleLength,bodyColor,wheelColor,customData
+tags: 
+license:  No copyright, 2020 Garth Zeglin.  This file is explicitly placed in the public domain.
+licenseUrl: 
+documentationUrl: https://courses.ideate.cmu.edu/16-375
+info: Proxy\srobot\sbody\sto\srepresent\sa\sremote\srobot,\sbased\son\sthe\swobbly\srobot\sbody.\nThis\srobot\shas\sno\sphysics\sbut\sis\spositioned\sby\sa\sdelegate\sin\sresponse\sto\nposition\sdata\sreported\sover\sthe\snetwork.

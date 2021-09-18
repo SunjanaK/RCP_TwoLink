@@ -1,0 +1,11 @@
+Webots Proto Cache File version 1.5
+protoFileHash: 17b344bd8bec396a95e93895ffcf311b
+needsRobotAncestor: 1
+baseType: Robot
+slotType: 
+parameters: translation,rotation,controller,name,customData
+tags: 
+license:  No copyright, 2020 Garth Zeglin.  This file is explicitly placed in the public domain.
+licenseUrl: 
+documentationUrl: https://courses.ideate.cmu.edu/16-375
+info: A\s'robot'\semulating\sa\spaintable\sfloor\ssurface.

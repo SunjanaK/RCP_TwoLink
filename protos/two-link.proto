@@ -1,0 +1,262 @@
+#VRML_SIM R2021b utf8
+# documentation url: https://courses.ideate.cmu.edu/16-375
+# Planar two-link actuated arm for course exercises.  The graphics use only
+# primitives for clarity of the source. The base has NULL physics so it will be
+# fixed in place. The two link lengths are adjustable parameters to demonstrate
+# using procedural elements in the prototype.  The link physics properties are
+# specified using density so the dynamics will also scale, but the motor
+# parameters are constant.  The end includes a distance sensor pointed along the
+# axis.
+# license: No copyright, 2020-2021 Garth Zeglin.  This file is explicitly placed in the public domain.
+PROTO two-link [
+  field SFVec3f    translation  0 0 0
+  field SFRotation rotation     0 1 0 0
+  field SFFloat    link1Length  0.5
+  field SFFloat    link2Length  0.5
+  field SFString   controller   "two_link"
+  field SFString   name         ""
+  field SFString   customData   ""
+]
+{
+  Robot {
+    # connect properties to user-visible data fields
+    translation IS translation
+    rotation IS rotation
+    controller IS controller
+    name IS name
+    customData IS customData
+
+    # calculate derived parameters
+    %{
+      local halfLink1Len = fields.link1Length.value / 2
+      local halfLink2Len = fields.link2Length.value / 2
+    }%
+
+    # define the kinematic tree
+    children [
+      # add a default radio receiver and transmitter
+      Receiver {
+      }
+      Emitter {
+      }
+
+      # the rectilinear base shape is wrapped in a Transform
+      # to position it within the robot body coordinates
+      DEF baseObject Transform {
+        translation 0 0 0.1
+        # the Cylinder shape coordinates use Y as the
+        # long axis; this rotation places the axis vertically
+        rotation 1 0 0 1.5708
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.21529 0.543008 0.99855
+              metalness 0
+            }
+            geometry Cylinder {
+	      height 0.2
+	      radius 0.2
+            }
+          }
+        ]
+      }
+      # define the base pivot joint connecting the base
+      # and the first link
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 0 1
+        }
+        device [
+          PositionSensor {
+            name "joint1"
+          }
+          RotationalMotor {
+            name "motor1"
+            acceleration 2
+            maxVelocity 3.14
+            maxTorque 2
+          }
+        ]
+        # start definition of the first link
+        endPoint Solid {
+          # place the shape origin halfway along the first link;
+          # this vector is in body coordinates, X points along
+          # the link in the neutral pose
+          translation %{=halfLink1Len}% 0 0.25
+          children [
+            # define the 'elbow' pivot connecting the links
+            HingeJoint {
+              jointParameters HingeJointParameters {
+                axis 0 0 1
+                # place the elbow joint axis at the end of the first
+                # link; position is relative to link1 origin
+                anchor %{= halfLink1Len }% 0 0
+                dampingConstant 0.1
+              }
+              device [
+                PositionSensor {
+                  name "joint2"
+                }
+                RotationalMotor {
+                name "motor2"
+                acceleration 2
+                maxVelocity 6.28
+                maxTorque 1.5
+                }
+              ]
+              # define the second link
+              endPoint Solid {
+                # place the link2 origin halfway along the second link
+                translation %{= halfLink1Len+halfLink2Len}% 0 0.1
+                children [
+                  # the cylindrical link shape is wrapped in a Transform
+                  # to position it within the link2 coordinates
+                  DEF link2Shape Transform {
+                    # the Cylinder shape coordinates use Y as the
+                    # long axis; this -90 deg rotation around Z
+                    # places the lengthwise Y axis along the link.
+                    rotation 0 0 -1 1.5708
+                    children [
+                      Shape {
+                        appearance DEF greenAppearance PBRAppearance {
+                          baseColor 0.413001 1 0.33489
+                          metalness 0
+                        }
+                        geometry Cylinder {
+                          height IS link2Length
+                          radius 0.05
+                        }
+                      }
+                   ]
+                 } # end link2 Shape
+	     	 # add a visual hub to the base of link2, not part of the bounding object
+	     	 Transform {
+             	    rotation 1 0 0 1.5708
+             	    translation %{= -halfLink2Len}% 0 0
+  	     	 	children [
+	     	 	  Shape {
+             	        appearance USE greenAppearance
+             	        geometry Cylinder {
+	     	 	      height 0.1
+	     	 	      radius 0.05
+	     	 	    }
+	     	 	  }
+	     	 	]
+             	 } # end Transform around link2 base hub
+		 # define a DistanceSensor attached to the second link Solid node
+                 DistanceSensor {
+                   translation %{= halfLink2Len}% 0 0
+                   name "endRangeSensor"
+
+		   # the sensor lookup table implicitly defines the maximum range and the units, each
+		   # entry is [distance, value, noise]
+                   lookupTable [
+                     0 0 0
+                     0.9 0.9 0    # 0.9 meters reads as 0.9 meters
+                   ]
+		   resolution 0.001 # assume millimeter resolution
+                   numberOfRays 5
+                   aperture 0.1
+                   children [
+                     Transform {
+                       rotation 0 0 1 1.5708
+                       children [
+                         Shape {
+                           appearance PBRAppearance {
+                             baseColor 1 0.99028 0.0584421
+                             roughness 0.5
+                             metalness 0.5
+                             emissiveColor 1 0.99028 0.0584421
+                             emissiveIntensity 0.2
+                           }
+                           geometry Cone {
+                             bottomRadius 0.02
+                             height 0.1
+                           }
+                         }
+                       ]
+                     }
+                   ]
+                 } # end DistanceSensor
+                ] # end link2 Solid children
+                # top-level properties of link2
+                name "link2"
+                boundingObject USE link2Shape
+                physics Physics {
+                  # Assume the link is a thin-walled aluminum tube with 50 mm
+		  # radius and 2 mm wall thickness.  Aluminum has a density of
+		  # 2700 kg/m^3, but this will be scaled by the ratio of the
+		  # tube cross-section to the solid cylinder cross-section
+		  # assumed by the simulator.  Note that the moment of inertia
+		  # around the long axis will be underestimated.
+		  # density = 2700 * (R_outer**2 - R_inner**2) / R_outer**2
+                  density 211.7
+                  mass -1
+                }
+              }
+            }
+            # finish the definition of link1 with a shape
+            # node in the 'children' list
+            DEF link1Shape Transform {
+              rotation 0 0 -1 1.5708
+              children [
+                Shape {
+                  appearance DEF redAppearance PBRAppearance {
+                     baseColor 00.990494 0.516915 0.468254
+                     metalness 0
+                  }
+                  geometry Cylinder {
+                    height IS link1Length
+                    radius 0.05
+                  }
+                }
+               ]
+             }
+	     # add a visual hub to the base of link1, not part of the bounding object
+	     Transform {
+                rotation 1 0 0 1.5708
+                translation %{= -halfLink1Len}% 0 0
+  		children [
+		  Shape {
+                    appearance USE redAppearance
+                    geometry Cylinder {
+		      height 0.1
+		      radius 0.05
+		    }
+		  }
+		]
+             } # end Transform around link1 base hub
+	     # add a visual hub to the end of link1, not part of the bounding object
+	     Transform {
+                rotation 1 0 0 1.5708
+                translation %{= halfLink1Len}% 0 0
+  		children [
+		  Shape {
+                    appearance USE redAppearance
+                    geometry Cylinder {
+		      height 0.1
+		      radius 0.05
+		    }
+		  }
+		]
+             } # end Transform around link1 end hub
+          ] # close the children list of the link1 node
+          # top-level properties of link1
+          name "link1"
+          boundingObject USE link1Shape
+          physics Physics {
+	    # See notes for link2 density; this assumes the same geometry.
+            density 211.7
+            mass -1
+          }
+        }
+      }
+    ] # close the children list of the base node
+    # define top-level properties of the base
+    boundingObject USE baseObject
+
+    # the base of the robot itself has NULL physics to simulate being fixed to the ground
+    # physics Physics { density -1 mass 10  }
+
+  } # close the Robot definition
+}

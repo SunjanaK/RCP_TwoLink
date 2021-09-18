@@ -1,0 +1,138 @@
+#VRML_SIM R2021b utf8
+# Large clock with hour and minute hands for course exercises.  The bezel, hour
+# hand, and minute hand were drawn in CAD in the reference frame of the robot.
+# The object shapes were specified as external STL files, and object physics parameters
+# calculated by the CAD system.  No bounding objects are specified.
+# The 'bezel' base does not have a physics node.
+# documentation url: https://courses.ideate.cmu.edu/16-375
+# license: No copyright, 2020-2021 Garth Zeglin.  This file is explicitly placed in the public domain.
+PROTO clock [
+  field SFVec3f    translation  0 0 0
+  field SFRotation rotation     0 1 0 0
+  field SFString   controller   "clock"
+  field SFString   name         "Clock"
+]
+{
+  Robot {
+    # connect properties to user-visible data fields
+    translation IS translation
+    rotation IS rotation
+    controller IS controller
+    name IS name
+
+    children [
+      DEF minuteJoint HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 0 -1
+	  dampingConstant 0.0
+        }
+        device [
+          PositionSensor {
+            name "minuteSensor"
+          }
+          RotationalMotor {
+            name "minuteMotor"
+            controlPID 4 0 0
+            maxTorque 0.5
+          }
+        ]
+
+        endPoint DEF minuteSolid Solid {
+          rotation 0 0 -1 0
+          children [
+            Transform {
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.898787 0 0.0763561
+                    roughness 1
+                    metalness 0
+                    name "DefaultMaterial"
+                  }
+		  geometry Mesh {
+ 		    url	[ "../stl/minute.stl" ]
+                  }
+                }
+              ]
+            }
+          ]
+          name "minuteSolid"
+          physics Physics {
+            density -1
+            mass 0.789
+            centerOfMass [
+              0 -0.025 0.11
+            ]
+            inertiaMatrix [
+              0.039 0.001 0.041
+              0 0 0
+            ]
+          }
+        }
+      }
+      DEF hourJoint HingeJoint {
+        jointParameters HingeJointParameters {
+          axis 0 0 -1
+	  dampingConstant 0.0
+        }
+        device [
+          PositionSensor {
+            name "hourSensor"
+          }
+          RotationalMotor {
+            name "hourMotor"
+            controlPID 4 0 0
+            maxTorque 0.5
+          }
+        ]
+        endPoint DEF hourSolid Solid {
+          rotation 0 0 -1 0
+          children [
+            Transform {
+              children [
+                Shape {
+                  appearance PBRAppearance {
+                    baseColor 0.141939 1 0.0408179
+                    roughness 1
+                    metalness 0
+                    name "DefaultMaterial"
+                  }
+		  geometry Mesh {
+ 		    url	[ "../stl/hour.stl" ]
+                  }
+                }
+              ]
+            }
+          ]
+          physics Physics {
+            density -1
+            mass 0.584
+            centerOfMass [
+              0 -0.019 0.14
+            ]
+            inertiaMatrix [
+              0.019 0.0005081 0.02
+              0 0 0
+            ]
+          }
+        }
+      }
+      DEF bezelSolid Solid {
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.517 0.338 0.279
+              roughness 0.3
+              metalness 0
+              name "DefaultMaterial"
+            }
+	    geometry Mesh {
+	      url [ "../stl/bezel.stl" ]
+            }
+          }
+        ]
+        name "bezel"
+      }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+Webots Proto Cache File version 1.5
+protoFileHash: 278e6097d1098ace29f74f7343f9433a
+needsRobotAncestor: 1
+baseType: Robot
+slotType: 
+parameters: translation,rotation,controller,name,numkeys,customData
+tags: 
+license:  No copyright, 2020 Garth Zeglin.  This file is explicitly placed in the public domain.
+licenseUrl: 
+documentationUrl: https://courses.ideate.cmu.edu/16-375
+info: Piano\skeyboard\srobot.\s\sEach\skey\shas\sa\slimit\sstop,\sreturn\sspring,\sand\sa\sposition\ssensor.
